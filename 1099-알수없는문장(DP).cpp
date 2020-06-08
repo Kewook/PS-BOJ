@@ -4,6 +4,8 @@ dp[i]는 0~i-1까지 자리중 만들수 있는 비용중 최소비용
 i = 0~str.size()만큼 루프문을 돌려주며
 j = i자리부터 거꾸로 검사해주는게 관건이다.
 j 를 0부터 i까지 오름차순으로 dp를 갱신하면 1~5자리중 3~5자리는 만들수 있는데 1~2자리까지는 만들수 없는 경우를 검사해주지 못한다.
+역으로 1~2자리는 가능하고 3~5자리는 못만들어주는 경우를 생각해보면 i가 오름차순으로 진행되기 때문에 bottom-up형식으로 다 구해진다.
+만약 i를 내림차순으로하고 j 를 오름차순으로 구현한다면 bottom-up방식이 아님.
 따라서 j는 i부터 내림차순으로 검사해줘야함.
 
 */
@@ -16,6 +18,7 @@ using namespace std;
 
 int dp[51], N, cnt[51][26];
 string str, word[51];
+
 
 bool isTrue(int num, int *temp) {
 	for (int i = 0; i < 26; i++) {
@@ -53,7 +56,7 @@ int main(void) {
                     //가능하면 비용이 얼만지 계산해서 dp 갱신
 					int cost = 0;
 					for (int k = j; k <= i; k++) if (str[k] != word[z][k - j])cost++;
-                    //만약 앞부분이 INF로 못만들면(dp[j]가 INF일때) 어차피 갱신이 되지 않는다.
+                    //만약 앞부분이 INF로 못만들면(dp[j]가 INF일때 INF + cost니까) 어차피 갱신이 되지 않는다.
 					dp[i + 1] = min(dp[i + 1], dp[j] + cost);
 				}
 			}
