@@ -1,6 +1,11 @@
+/*
+단방향 그래프이며 정점간 방향이 같은 간선은 유일하다는 점을 주목.
+
+1~N(X제외) -> X로 가는 최단경로 + X-> (1~N)으로 가는 최단경로를 더해주면 된다.
+따라서 인접행렬과 dist를 두가지로 구성하여 다익스트라 알고리즘을 두번 수행해주면 된다.
+*/
 #include<iostream>
 #include<vector>
-#include<algorithm>
 #include<queue>
 
 using namespace std;
@@ -15,35 +20,29 @@ struct Info {
 
 const int INF = 999 * 100 + 1;
 
-int N, M, X, student[1001];
-vector<Info> adj[1001];
+int N, M, X, student[1001], dist[2][1001];
+vector<Info> adj[2][1001];
 
-void dijkstra(int s, int e) {
-	int dist[1001];
-	for (int i = 1; i <= N; i++)dist[i] = INF;
-	
+void dijkstra(int mode) {	
 	priority_queue<Info> pq;
-	pq.push({ s, 0 });
+	pq.push({ X, 0 });
 	
-	dist[s] = 0;
+	dist[mode][X] = 0;
 	
 	while (!pq.empty()) {
 		int node = pq.top().node, cost = pq.top().cost;
 		pq.pop();
 
-		if (dist[node] < cost)continue;
+		if (dist[mode][node] < cost)continue;
 		
-		for (Info &info : adj[node]) {
+		for (Info &info : adj[mode][node]) {
 			int next = info.node, ncost = info.cost;
-			if (dist[next] > dist[node] + ncost) {
-				dist[next] = dist[node] + ncost;
-				pq.push({ next, dist[next] });
+			if (dist[mode][next] > dist[mode][node] + ncost) {
+				dist[mode][next] = dist[mode][node] + ncost;
+				pq.push({ next, dist[mode][next] });
 			}
 		}
 	}
-	
-	if (s == X) for (int i = 1; i <= N; i++) student[i] += dist[i];
-	else student[s] += dist[e];
 }
 
 int main(void) {
@@ -55,14 +54,18 @@ int main(void) {
 	for (int i = 0; i < M; i++) {
 		int a, b, c;
 		cin >> a >> b >> c;
-		adj[a].push_back({ b,c });
+		adj[0][a].push_back({ b,c });
+		adj[1][b].push_back({ a,c });
 	}
+
+	for (int i = 1; i <= N; i++)dist[0][i] = dist[1][i] = INF;
+
+	dijkstra(0);
+	dijkstra(1);
 	
-	for (int i = 1; i <= N; i++) dijkstra(i, X);
-	
-	int maxSt = student[1];
-	for (int i = 2; i <= N; i++)maxSt = maxSt < student[i] ? student[i] : maxSt;
-	
-	cout << maxSt;
+	int ans = dist[0][1] + dist[1][1];
+	for (int i = 2; i <= N; i++)ans = ans < dist[0][i] + dist[1][i] ? dist[0][i] + dist[1][i] : ans;
+
+	cout << ans;
 	return 0;
 }
