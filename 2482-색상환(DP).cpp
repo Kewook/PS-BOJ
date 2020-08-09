@@ -3,6 +3,8 @@
 
 cache[idx][cnt][flag]로 구성하면 틀리고
 cache[flag][idx][cnt]로 구성하면 맞는다 왜그런지는 아직 모르겠다.
+-> 해결 : 만약에 sol(idx)가 999로 들어오면 2를 증가한 sol(idx == 1001)로 분기한다.
+앞에 맞았던것은 ub로 우연의 일치로 맞았던 코드고 원래는 WA가 나오는게 정상이다.
 */
 
 #include<iostream>
