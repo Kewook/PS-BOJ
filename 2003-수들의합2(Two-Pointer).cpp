@@ -18,6 +18,7 @@ int main(void) {
 		
 		else if (r >= N)break;
 		else if (sum < M)sum += ar[r++];
+		//이 조건이 앞에 있으면 
 		if (sum == M)++ans;
 	}
 
