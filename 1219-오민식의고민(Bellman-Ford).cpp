@@ -3,7 +3,11 @@
 따라서 벨만포드 알고리즘을 사용해야 했으나 다른 블로그를 참조해서 풀이했다.
 --> 보통 음의 돈이 존재하거나 돈을 무한하게 벌 수 있다라고 하면 벨만포드 알고리즘을 사용한다.
 
-dist[node] : 시작점에서 node까지 왔을때 소지할 수 있는 비용의 최대값.
+dist[node] : 시작점에서 node까지 왔을때 소지할 수 있는 돈의 최대값.
+돈의 최대값 == 사용하는 비용의 최소값
+따라서 수익을 음의가중치로 봐야한다.
+하지만 최대 돈의 액수를 출력해야 하기 때문에 좀더 가독성을 높이기 위해 -INF로 dist를 초기화하고 dist를 비교할때 부등호를 반대로 풀었다.
+
 
 보통 벨만 포드 알고리즘을 수행할 때, loop가 N번째 루프에 dist값이 수정이 된다면 음의 사이클이 존재한다는 것이다.
 하지만 이 음의 사이클이 존재하긴 하지만 S-> E로 갈때 음의 사이클이 있는 지점을 밟지 않고 갈 수도 있는 점을 생각해보면 문제를 다른식으로 해결해야 한다.
@@ -43,6 +47,9 @@ int main(void) {
 	for (int i = 0; i < N; i++) {
 		cin >> revenue[i];
 		dist[i] = -INF;
+		//돈의 최대값이라고 보지않고 사용하는 비용의 최소값이라 생각하고 풀이하면 다음과 같다.
+		//dist[i] = INF;
+		//revenue *= -1;
 	}
 
 	dist[S] = revenue[S];
@@ -52,6 +59,8 @@ int main(void) {
 		for (int i = 0; i < N; i++) {
 			for (auto next : adj[i]) {
 				if (dist[i] != -INF && dist[next.node] < dist[i] - next.cost + revenue[next.node]) {
+				//if (dist[i] != INF && dist[next.node] > dist[i] + next.cost + revenue[next.node]) {
+					//dist[next.node] = dist[i] + next.cost + revenue[next.node];
 					dist[next.node] = dist[i] - next.cost + revenue[next.node];
 					flag = true;
                     //음의사이클이 있는 노드번호를 모두 저장한다.
@@ -84,8 +93,10 @@ int main(void) {
 	}
     
 	if (dist[E] == -INF)cout << "gg";
+	//if (dist[E] == INF)cout << "gg";
 	else if (checkGee)cout << "Gee";
 	else cout << dist[E];
+	//else cout << -dist[E];
 
 	return 0;
 }
