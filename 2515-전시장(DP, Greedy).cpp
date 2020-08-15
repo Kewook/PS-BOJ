@@ -104,3 +104,67 @@ int main(void) {
 	cout << sol(0);
 	return 0;
 }
+
+/*
+!!!!!!!! [재수정] !!!!!!!!
+
+top-down방식에서 시간초과가 났던 이유는 그림을 놓을 수 있는 그림의 수를 판단할 때 N의 사이즈를 간과했다.
+N이 30만이 넘기때문에 task마다 적어도 N번 돌아야 하기때문에 시간 복잡도가 급격하게 상승한다. ==> 이분탐색을 이용하자.
+*/
+
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+
+using namespace std;
+
+struct Paint {
+	int height, val;
+
+	bool operator < (const Paint &ipt) {
+		return height < ipt.height;
+	}
+};
+
+int N, S, cache[300001];
+Paint paint[300001];
+
+int lowerbound(int l, int r, int target) {
+	while (l < r) {
+		int mid = (l + r) / 2;
+		if (paint[mid].height >= target)r = mid;
+		else l = mid + 1;
+	}
+	return r;
+}
+
+int sol(int idx) {
+	if (idx > N) return 0;
+
+	int &ret = cache[idx];
+	if (ret != -1)return ret;
+
+	//idx번째 그림을 놓지 않을때
+	ret = sol(idx + 1);
+	//idx그림을 놓으면 그 뒤의 그림의 높이가 적어도 paint[idx].height+S는 되어야 한다.
+	//lowerbound(1, N, paint[idx].height+S); lowerbound의 N+1 데이터 사이즈가 되어야 한다는걸 잊지말자.
+	int pos = lowerbound(1, N+1, paint[idx].height + S);
+	ret = max(ret, sol(pos) + paint[idx].val);
+	
+	return ret;
+}
+int main(void) {
+	ios::sync_with_stdio(0);
+	cin.tie(NULL); cout.tie(NULL);
+
+	cin >> N >> S;
+	for (int i = 1; i <= N; i++) {
+		cin >> paint[i].height >> paint[i].val;
+	}
+
+	memset(cache, -1, sizeof(cache));
+	sort(paint + 1, paint + (N + 1));
+
+	cout << sol(1);
+	return 0;
+}
