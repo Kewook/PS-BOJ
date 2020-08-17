@@ -68,6 +68,7 @@ int main(void) {
 	}
 	
     //처음에 ans를 10000*1000000 +1로 초기화해서 틀렸다. (long long)10000*1000000+1로 형변환을 해주어야 정확한 값이 들어간다
+	//long long ans = (long long)10000*1000000 +1;
 	long long ans = 1e18;
 	for (int i = 0; i <= K; i++)ans = min(ans, dist[N][i]);
 	cout << ans;
