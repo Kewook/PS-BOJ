@@ -1,5 +1,5 @@
 /*
-operator 오버라이딩 구성을 잘못해서 한번 WA받음
+operator 오버로딩 구성을 잘못해서 한번 WA받음
 */
 #include<iostream>
 #include<algorithm>

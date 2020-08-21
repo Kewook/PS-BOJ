@@ -15,9 +15,10 @@ int main(void) {
 	while (true) {
         //이 조건이 앞에 있어야 l을 N-1까지 탐색할 수 있다.
 		if (sum >= M)sum -= ar[l++];
-		
 		else if (r >= N)break;
 		else if (sum < M)sum += ar[r++];
+
+		
 		//이 조건이 앞에 있으면 
 		if (sum == M)++ans;
 	}
